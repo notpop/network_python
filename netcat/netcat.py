@@ -60,6 +60,16 @@ class NetCat:
         except EOFError as e:
             print(e)
     
+    def listen(self):
+        self.socket.bind((self.args.target, self.args.port))
+        self.socket.listen(5)
+        while True:
+            client_socket, _ = self.socket.accept()
+            client_thread = threading.Thread(
+                target=self.handle, args=(client_socket,)
+            )
+            client_thread.start()
+    
     def run(self):
         if self.args.listen:
             self.listen()
